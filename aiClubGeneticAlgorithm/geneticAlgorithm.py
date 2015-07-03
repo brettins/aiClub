@@ -1,10 +1,26 @@
 from __future__ import division
 import random
 
-numberWeAreLookingFor = 140
+#TODO - Look at research for avoiding local optima  
+#http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.106.8662&rep=rep1&type=pdf
+# best solutions seem to be randomly generated offspring and 
+#variable mutation rate (VMR)  (VMR doesn't actually make it better, 
+#but it sets the mutation rate to an optimal value which is 
+#apparently hard as balls doing by yourself)
+
+
+#TODO - our selection process eliminates all parents, which is 
+#not ideal - please see Steady-State Selection here:
+#http://www.obitko.com/tutorials/genetic-algorithms/selection.php
+#elitism (from the same page) also solves a problem we were having where the top few are copied to the next
+#generation without a chance of change or mutation - ALPHA DOG STAYS UNTOUCHED
+
+
+
+numberWeAreLookingFor = 14044
 tolerableError = 0.5
 chromosomeSize = 36
-populationSize = 500
+populationSize = 1000
 mutationRate = 0.107
 epochs = 250
 
@@ -114,7 +130,8 @@ def cleanupMathExpression(mathExpression):
                 #if the character before it is an operator
                         elif mathExpression[i-1] in operators:
                                #### print("this was a +/- and there was an operator before it")
-                                characterPasses = False
+				if not (mathExpression[i] == "*" and mathExpression[i-1] == "*"):
+				  characterPasses = False
         if characterPasses:
          # print("it passed")
           newMathExpressionString +=(mathExpression[i])
@@ -141,7 +158,10 @@ def fitnessScore(chromosome):
     chromosomeMathValue = eval(mathExpression)
   except:
     return 0.99 
-  percentError = abs(( numberWeAreLookingFor - chromosomeMathValue ) / numberWeAreLookingFor)
+  try:
+	  percentError =  abs(( numberWeAreLookingFor - chromosomeMathValue ) / numberWeAreLookingFor)
+  except:
+    	  return 0.99 
   return percentError
 
 def createWeightedListOfChromosomes(listOfChromosomes):
@@ -206,7 +226,6 @@ def mutateChromosome(chromosome, mutationRate):
   return newChromosome
 
 
-decode("0000")
 
 chromosomes = generateChromosomes(populationSize)
 for epochNumber in range (0,epochs):
