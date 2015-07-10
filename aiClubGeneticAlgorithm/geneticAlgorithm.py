@@ -206,6 +206,7 @@ def findHighestWeightedChromosome(weightedChromosomes):
 #We should introduce a maximum fitness score.  A score of zero indicates target number hit.
 
 def crossoverChromosomes(chromosomeA, chromosomeB, splitPoint):
+  splitPoint = (splitpoint % 9)*4
   chromosomeAB = chromosomeA[0:splitPoint]+chromosomeB[splitPoint:len(chromosomeB)]
   chromosomeBA = chromosomeB[0:splitPoint]+chromosomeA[splitPoint:len(chromosomeA)]
   
