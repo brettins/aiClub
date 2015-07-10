@@ -97,4 +97,13 @@ class GeneticAlgorithm:
                     return (0,chromosome),True
 
 
-        return weightedListOfTuples, False 
+        return weightedListOfTuples, False
+
+    def isPopulationStagnant(self,weightedChromosomes,acceptableStdDev):
+        weights = []
+        for weight, chromosome in weightedChromosomes:
+            weights.append(weight)
+        if numpy.std(weights) < acceptableStvDev:
+            return False
+        else:
+            return True
