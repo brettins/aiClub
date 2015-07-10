@@ -4,24 +4,29 @@ import random
 class Population:
             
     def __init__(self,numberOfChromosomes,lengthOfChromosomes):
+        """Randomly generates a population of chromosome and stores it in a class variable"""
         self.populationSize     = numberOfChromosomes
         self.chromosomeLength   = lengthOfChromosomes
         self.population         = self.generateChromosomes(self.populationSize,self.chromosomeLength)
 
     def generateChromosome(self,length):
-        return generalFunctions.arrayToString(generalFunctions.generateRandomArray(length))
+        """Generates one chromsome as a random series of 0s and 1s"""
+        return generalFunctions.arrayToString(generalFunctions.generateRandomArray(length,0,1))
 
 
     def generateChromosomes(self, numberOfChromosomes,length):
+        """Generates a list of randomly generated chromosomes and return that list"""
         chromosomes = []
         for i in range (1,numberOfChromosomes):
             chromosomes.append(self.generateChromosome(length))
         return chromosomes 
 
     def getPopulation(self):
+        """Get the population and return it (list)"""
         return self.population
 
     def setPopulation(self,newPopulation):
+        """Overwrite the current population with a new population (list)"""
         self.population = newPopulation
 
     @staticmethod
