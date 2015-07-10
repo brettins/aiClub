@@ -24,6 +24,14 @@ def weighted_sample(items, n):
         yield v
         n -= 1
 
+def takeHighestWeightedItems(items, n):
+    sortedItems = sorted(items,reverse=True)
+    itemsToReturn = []
+    for i in range(0,n):
+        itemsToReturn.append(sortedItems[i])
+    return itemsToReturn
+
+
 def splitStringEveryNCharacters(stringToSplit,n):
     """
     Usage: (splitStringEveryNCharacters("gooballooon",2)

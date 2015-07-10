@@ -57,7 +57,11 @@ class GeneticAlgorithm:
             if self.fitnessFunction(bestChromosome) == 0.0:
                 print("found the right answer")
                 break
-            
+            numberOfElites = (int)(0.01 * self.populationSize)
+            elites = generalFunctions.takeHighestWeightedItems(weightedChromosomes,numberOfElites)
+
+            nextGenerationChromosomes.extend(x[1] for x in elites)
+
             while len(nextGenerationChromosomes) < self.populationSize:
                 #print('mayyyyyytinnnnng #' + str(len(nextGenerationChromosomes)))
                 pairToMate = GeneticAlgorithm.selectTwoToMate(weightedChromosomes)
