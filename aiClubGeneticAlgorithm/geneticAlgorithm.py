@@ -36,7 +36,20 @@ class GeneticAlgorithm:
         for epochNumber in range (0,self.numberOfEpochs):
             print("Epoch # " + str(epochNumber))
             nextGenerationChromosomes = []
-            weightedChromosomes = self.createWeightedListOfChromosomes(population.getPopulation())
+            weightedChromosomes,foundSolution = self.createWeightedListOfChromosomes(population.getPopulation())
+            if foundSolution:
+                print("")
+                print("")
+                print("")
+                print("")
+                print("**********************")
+                print("Found the right answer")
+                print("**********************")
+                print("Chromosome: ")
+                print( weightedChromosomes[1])
+                print( "Readable version:")
+                print(self.chromosomeReadableFunction(weightedChromosomes[1]))
+                break
             weighting,bestChromosome = GeneticAlgorithm.findHighestWeightedChromosome(weightedChromosomes)
             readableVersion = self.chromosomeReadableFunction(bestChromosome)
             print("the best of all the chromosomes was this:")
@@ -76,6 +89,12 @@ class GeneticAlgorithm:
         weightedListOfTuples = []
         for chromosome in listOfChromosomes:
             fitness = self.fitnessFunction(chromosome)
-            weight = 1/(fitness + 0.000000001)
-            weightedListOfTuples.append((weight,chromosome))
-        return weightedListOfTuples  
+            if not fitness is None:
+                if not fitness == 0:
+                    weight = 1/(fitness)
+                    weightedListOfTuples.append((weight,chromosome))
+                else:
+                    return (0,chromosome),True
+
+
+        return weightedListOfTuples, False 
