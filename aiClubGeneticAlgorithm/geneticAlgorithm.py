@@ -40,7 +40,7 @@ class GeneticAlgorithm:
             weighting,bestChromosome = GeneticAlgorithm.findHighestWeightedChromosome(weightedChromosomes)
             readableVersion = self.chromosomeReadableFunction(bestChromosome)
             print("the best of all the chromosomes was this:")
-            print("Weight:" + str(weighting) + " chromosome: "  +  bestChromosome + " readableVersion:" + readableVersion)
+            print("Weight:" + str(weighting) + " chromosome: "  +  bestChromosome + " readableVersion:" + readableVersion + " value: " + str(eval(readableVersion)))
             if self.fitnessFunction(bestChromosome) == 0.0:
                 print("found the right answer")
                 break
