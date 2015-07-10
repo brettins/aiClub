@@ -156,5 +156,6 @@ geneticAlgorithm.setNumberOfEpochs(epochs)
 geneticAlgorithm.setMutationRate(mutationRate)
 geneticAlgorithm.setChromosomeSize(chromosomeSize)
 geneticAlgorithm.setChromsomeToHumanReadableFunction(chromosomeToMathExpression)
+geneticAlgorithm.setGeneSize(4)
 
 geneticAlgorithm.run()

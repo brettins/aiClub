@@ -30,7 +30,8 @@ class Population:
         self.population = newPopulation
 
     @staticmethod
-    def crossoverChromosomes(chromosomeA, chromosomeB, splitPoint,mutationRate):
+    def crossoverChromosomes(chromosomeA, chromosomeB, splitPoint,mutationRate,geneSize):
+        splitPoint = (splitPoint%(len(chromosomeA)/geneSize))*geneSize
         chromosomeAB = chromosomeA[0:splitPoint]+chromosomeB[splitPoint:len(chromosomeB)]
         chromosomeBA = chromosomeB[0:splitPoint]+chromosomeA[splitPoint:len(chromosomeA)]
         return Population.mutateChromosome(chromosomeAB,mutationRate), Population.mutateChromosome(chromosomeBA,mutationRate) 

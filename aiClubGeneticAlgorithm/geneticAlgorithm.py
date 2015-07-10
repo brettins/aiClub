@@ -11,7 +11,10 @@ class GeneticAlgorithm:
         self.numberOfEpochs = 100
         self.mutationRate = 0.107
         self.chromosomeSize = 36
+        self.geneSize = 4
 
+    def setGeneSize(self,geneSize):
+        self.geneSize = geneSize
 
     def setPopulationSize(self,populationSize):
         self.populationSize = populationSize
@@ -45,7 +48,7 @@ class GeneticAlgorithm:
             while len(nextGenerationChromosomes) < self.populationSize:
                 #print('mayyyyyytinnnnng #' + str(len(nextGenerationChromosomes)))
                 pairToMate = GeneticAlgorithm.selectTwoToMate(weightedChromosomes)
-                firstChild,secondChild = Population.crossoverChromosomes(pairToMate[0],pairToMate[1],random.randint(0,10),self.mutationRate)
+                firstChild,secondChild = Population.crossoverChromosomes(pairToMate[0],pairToMate[1],random.randint(0,10),self.mutationRate,self.geneSize)
                 nextGenerationChromosomes.append(firstChild)
                 nextGenerationChromosomes.append(secondChild)
             population.setPopulation(nextGenerationChromosomes)
