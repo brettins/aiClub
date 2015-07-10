@@ -2,16 +2,14 @@ from __future__ import division
 from population import Population
 import random
 import generalFunctions
-import numpy
-
 
 class GeneticAlgorithm:
 
     def __init__(self,fitnessFunction):
         self.fitnessFunction = fitnessFunction
-        self.populationSize = 10000
+        self.populationSize = 1000
         self.numberOfEpochs = 100
-        self.mutationRate = 0.07
+        self.mutationRate = 0.107
         self.chromosomeSize = 36
         self.geneSize = 4
 
@@ -38,7 +36,20 @@ class GeneticAlgorithm:
         for epochNumber in range (0,self.numberOfEpochs):
             print("Epoch # " + str(epochNumber))
             nextGenerationChromosomes = []
-            weightedChromosomes = self.createWeightedListOfChromosomes(population.getPopulation())
+            weightedChromosomes,foundSolution = self.createWeightedListOfChromosomes(population.getPopulation())
+            if foundSolution:
+                print("")
+                print("")
+                print("")
+                print("")
+                print("**********************")
+                print("Found the right answer")
+                print("**********************")
+                print("Chromosome: ")
+                print( weightedChromosomes[1])
+                print( "Readable version:")
+                print(self.chromosomeReadableFunction(weightedChromosomes[1]))
+                break
             weighting,bestChromosome = GeneticAlgorithm.findHighestWeightedChromosome(weightedChromosomes)
             readableVersion = self.chromosomeReadableFunction(bestChromosome)
             print("the best of all the chromosomes was this:")
@@ -78,16 +89,12 @@ class GeneticAlgorithm:
         weightedListOfTuples = []
         for chromosome in listOfChromosomes:
             fitness = self.fitnessFunction(chromosome)
-            weight = 1/(fitness + 0.000000001)
-            weightedListOfTuples.append((weight,chromosome))
-        return weightedListOfTuples
+            if not fitness is None:
+                if not fitness == 0:
+                    weight = 1/(fitness)
+                    weightedListOfTuples.append((weight,chromosome))
+                else:
+                    return (0,chromosome),True
 
-    def isPopulationStagnant(self,weightedChromosomes,acceptableStdDev):
-        weights = []
-        for weight, chromosome in weightedChromosomes:
-            weights.append(weight)
-        if numpy.std(weights) < acceptableStvDev:
-            return False
-        else:
-            return True
 
+        return weightedListOfTuples, False 

@@ -131,11 +131,11 @@ def fitnessScore(chromosome):
   try:
     chromosomeMathValue = eval(mathExpression)
   except:
-    return 0.99 
+    return None
   try:
 	  percentError =  abs(( numberWeAreLookingFor - chromosomeMathValue ) / numberWeAreLookingFor)
   except:
-    	  return 0.99 
+    	  return None
   return percentError
 
   
