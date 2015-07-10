@@ -25,6 +25,7 @@ chromosomeSize = 36
 populationSize = 1000
 mutationRate = 0.107
 epochs = 250
+geneSize = 4
 
 def encode(x):
   return {
@@ -211,7 +212,7 @@ for epochNumber in range (0,epochs):
         while len(nextGenerationChromosomes) < populationSize:
             #print('mayyyyyytinnnnng #' + str(len(nextGenerationChromosomes)))
             pairToMate = selectTwoToMate(weightedChromosomes)
-            firstChild,secondChild = Population.crossoverChromosomes(pairToMate[0],pairToMate[1],random.randint(0,10),mutationRate)
+            firstChild,secondChild = Population.crossoverChromosomes(pairToMate[0],pairToMate[1],random.randint(0,10),mutationRate,geneSize)
             nextGenerationChromosomes.append(firstChild)
             nextGenerationChromosomes.append(secondChild)
         population.setPopulation(nextGenerationChromosomes)
