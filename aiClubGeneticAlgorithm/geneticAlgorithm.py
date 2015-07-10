@@ -2,14 +2,16 @@ from __future__ import division
 from population import Population
 import random
 import generalFunctions
+import numpy
+
 
 class GeneticAlgorithm:
 
     def __init__(self,fitnessFunction):
         self.fitnessFunction = fitnessFunction
-        self.populationSize = 1000
+        self.populationSize = 10000
         self.numberOfEpochs = 100
-        self.mutationRate = 0.107
+        self.mutationRate = 0.07
         self.chromosomeSize = 36
         self.geneSize = 4
 
@@ -78,4 +80,14 @@ class GeneticAlgorithm:
             fitness = self.fitnessFunction(chromosome)
             weight = 1/(fitness + 0.000000001)
             weightedListOfTuples.append((weight,chromosome))
-        return weightedListOfTuples  
+        return weightedListOfTuples
+
+    def isPopulationStagnant(self,weightedChromosomes,acceptableStdDev):
+        weights = []
+        for weight, chromosome in weightedChromosomes:
+            weights.append(weight)
+        if numpy.std(weights) < acceptableStvDev:
+            return False
+        else:
+            return True
+
