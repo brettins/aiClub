@@ -1,5 +1,7 @@
 from __future__ import division
 import random
+from population import Population
+import  generalFunctions
 
 #TODO - Look at research for avoiding local optima  
 #http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.106.8662&rep=rep1&type=pdf
@@ -26,7 +28,7 @@ epochs = 250
 
 def encode(x):
   return {
-         '0': "0000",
+        '0': "0000",
         '1': "0001",
         '2': "0010",
         '3': "0011",
@@ -88,21 +90,6 @@ def characterToNibble(character):
   return nibble
 
       
-def generateChromosome():
-    return arrayToString(generateRandomArray(chromosomeSize))
-
-
-def generateChromosomes(numberOfChromosomes):
-    chromosomes = []
-    for i in range (1,numberOfChromosomes):
-        chromosomes.append(generateChromosome())
-    return chromosomes 
-
-def generateRandomArray(arraySize):
-    returnArray = [];
-    for x in range(0, arraySize):
-        returnArray.append(str(random.randint(0,1)))
-    return returnArray
 
   
 def cleanupMathExpression(mathExpression):
@@ -139,9 +126,6 @@ def cleanupMathExpression(mathExpression):
 
   
       
-  
-def arrayToString(array):
-  return ''.join(array)
   
                             
     #(splitStringEveryNCharacters("gooballooon",2)
@@ -205,34 +189,17 @@ def findHighestWeightedChromosome(weightedChromosomes):
 
 #We should introduce a maximum fitness score.  A score of zero indicates target number hit.
 
-def crossoverChromosomes(chromosomeA, chromosomeB, splitPoint):
-  splitPoint = (splitpoint % 9)*4
-  chromosomeAB = chromosomeA[0:splitPoint]+chromosomeB[splitPoint:len(chromosomeB)]
-  chromosomeBA = chromosomeB[0:splitPoint]+chromosomeA[splitPoint:len(chromosomeA)]
-  
-  return mutateChromosome(chromosomeAB,mutationRate), mutateChromosome(chromosomeBA,mutationRate) 
-
-def mutateChromosome(chromosome, mutationRate):
-#mutation rate is 0<x<1
-  newChromosome =""
-  for i in chromosome:
-    randomNumber = random.random()
-    if randomNumber < mutationRate:
-      if chromosome[int(i)]=="1":
-          newChromosome+="0"
-      else:
-          newChromosome+="1"
-    else:
-        newChromosome+=chromosome[int(i)]
-  return newChromosome
 
 
 
-chromosomes = generateChromosomes(populationSize)
+
+#chromosomes = generateChromosomes(populationSize)
+population  = Population(populationSize,chromosomeSize)
 for epochNumber in range (0,epochs):
         print("Epoch # " + str(epochNumber))
         nextGenerationChromosomes = []
-        weightedChromosomes = createWeightedListOfChromosomes(chromosomes)
+        weightedChromosomes = createWeightedListOfChromosomes(population.getPopulation())
+        print("got the wegithed chromosomes")
         weighting,bestChromosome = findHighestWeightedChromosome(weightedChromosomes)
         mathVersion = chromosomeToMathExpression(bestChromosome)
         print("the best of all the chromosomes was this:")
@@ -244,7 +211,7 @@ for epochNumber in range (0,epochs):
         while len(nextGenerationChromosomes) < populationSize:
             #print('mayyyyyytinnnnng #' + str(len(nextGenerationChromosomes)))
             pairToMate = selectTwoToMate(weightedChromosomes)
-            firstChild,secondChild = crossoverChromosomes(pairToMate[0],pairToMate[1],random.randint(0,10))
+            firstChild,secondChild = Population.crossoverChromosomes(pairToMate[0],pairToMate[1],random.randint(0,10),mutationRate)
             nextGenerationChromosomes.append(firstChild)
             nextGenerationChromosomes.append(secondChild)
-        chromosomes = nextGenerationChromosomes
+        population.setPopulation(nextGenerationChromosomes)
