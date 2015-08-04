@@ -1,21 +1,8 @@
 from __future__ import division
 import random
 import generalFunctions
+from simpleeval import simple_eval
 from geneticAlgorithm import GeneticAlgorithm
-
-#TODO - Look at research for avoiding local optima  
-#http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.106.8662&rep=rep1&type=pdf
-# best solutions seem to be randomly generated offspring and 
-#variable mutation rate (VMR)  (VMR doesn't actually make it better, 
-#but it sets the mutation rate to an optimal value which is 
-#apparently hard as balls doing by yourself)
-
-
-#TODO - our selection process eliminates all parents, which is 
-#not ideal - please see Steady-State Selection here:
-#http://www.obitko.com/tutorials/genetic-algorithms/selection.php
-#elitism (from the same page) also solves a problem we were having where the top few are copied to the next
-#generation without a chance of change or mutation - ALPHA DOG STAYS UNTOUCHED
 
 
 
@@ -129,7 +116,7 @@ def cleanupMathExpression(mathExpression):
 def fitnessScore(chromosome):
   mathExpression = chromosomeToMathExpression(chromosome)
   try:
-    chromosomeMathValue = eval(mathExpression)
+    chromosomeMathValue = simple_eval(mathExpression)
   except:
     return None
   try:
@@ -142,20 +129,24 @@ def fitnessScore(chromosome):
 
 #We should introduce a maximum fitness score.  A score of zero indicates target number hit.
 
-numberWeAreLookingFor = 14044
+numberWeAreLookingFor = int(raw_input('Enter a number to look for:'))
 tolerableError = 0.5
-chromosomeSize = 36
+chromosomeSize = 400 
 populationSize = 1000
-mutationRate = 0.107
 epochs = 250
 
+simple_eval.POWER_MAX = 10000
 
 geneticAlgorithm = GeneticAlgorithm(fitnessScore)
 geneticAlgorithm.setPopulationSize(populationSize)
 geneticAlgorithm.setNumberOfEpochs(epochs)
-geneticAlgorithm.setMutationRate(mutationRate)
 geneticAlgorithm.setChromosomeSize(chromosomeSize)
 geneticAlgorithm.setChromsomeToHumanReadableFunction(chromosomeToMathExpression)
 geneticAlgorithm.setGeneSize(4)
 
+#mutationRate = 0.02
+#geneticAlgorithm.setMutationRate(mutationRate)
+
 geneticAlgorithm.run()
+print('we were looking for ')
+print(numberWeAreLookingFor)

@@ -38,15 +38,32 @@ class Population:
 
     @staticmethod
     def mutateChromosome(chromosome, mutationRate):
+        '''
+        print("")
+        print("#### MUTATION TIME ######:")
+        print("item to mutate looks like this:")
+        print(chromosome)
+        print("mutatation rate of "),
+        print(mutationRate)
+        '''
         #mutation rate is 0<x<1
         newChromosome =""
+        numberOfMutations = 0
         for i in chromosome:
             randomNumber = random.random()
             if randomNumber < mutationRate:
-                if chromosome[int(i)]=="1":
+                numberOfMutations +=1
+                if i=="1":
                     newChromosome+="0"
                 else:
                     newChromosome+="1"
             else:
-                newChromosome+=chromosome[int(i)]
+                newChromosome+=i
+        '''
+        print("mutated item looks like this: ")
+        print(newChromosome)
+        print("with"),
+        print(numberOfMutations),
+        print("mutations.")
+        '''
         return newChromosome
