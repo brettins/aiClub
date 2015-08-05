@@ -24,6 +24,26 @@ def weighted_sample(items, n):
         yield v
         n -= 1
 
+def weightedSampleNoRepeat(originalItems, n):
+    items = list(originalItems)
+    total = float(sum(w for w, v in items))
+    i = 0
+    w, v = items[0]
+
+    if n > 0:
+        x = total * (1 - random.random() ** (1.0 / n))
+        total -= x
+        while x > w:
+            x -= w
+            i += 1
+            w, v = items[i]
+        w -= x
+        items.pop(i)
+        if n == 1:
+            return v
+        return [v] + [weightedSampleNoRepeat(items,n-1)]
+
+
 def takeHighestWeightedItems(items, n):
     sortedItems = sorted(items,reverse=True)
     itemsToReturn = []

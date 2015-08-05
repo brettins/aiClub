@@ -154,7 +154,7 @@ class GeneticAlgorithm:
     @staticmethod
     def selectTwoToMate(weightedListOfChromosomes):
         pairToMate = []
-        for sample in generalFunctions.weighted_sample(weightedListOfChromosomes,2):
+        for sample in generalFunctions.weightedSampleNoRepeat(weightedListOfChromosomes,2):
             pairToMate.append(sample)
         return pairToMate
 
