@@ -22,7 +22,8 @@ def encode(x):
         '+': "1010",
         '-': "1011",
         '*': "1100",
-        '/': "1101"  
+        '/': "1101",
+        '.': "1111"  
     }[x]#blank string is the default if not found
 
 def decode(x):
@@ -42,7 +43,7 @@ def decode(x):
         "1100": '*',
         "1101": '/',
         "1110": '/',
-        "1111": '',
+        "1111": '.',
     }[x]#blank string is the default if not found
 
     #(splitStringEveryNCharacters("gooballooon",2)

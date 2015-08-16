@@ -78,7 +78,7 @@ class GeneticAlgorithm:
         for epochNumber in range (1,self.numberOfEpochs+1):
             print("Epoch # " + str(epochNumber))
             nextGenerationChromosomes = []
-            weightedChromosomes,foundSolution = self.createWeightedListOfChromosomes(population.getPopulation())
+            weightedChromosomes,foundSolution = self.createWeightedSetOfChromosomes(population.getPopulation())
             if foundSolution:
                 print("")
                 print("")
@@ -117,6 +117,8 @@ class GeneticAlgorithm:
                 break
             numberOfElites = (int)(self.eliteRatio * self.populationSize)
             elites = generalFunctions.takeHighestWeightedItems(weightedChromosomes,numberOfElites)
+            #if self.adjustedMutationRate > 0.4:
+            #    print elites
 
             nextGenerationChromosomes.extend(x[1] for x in elites)
 
@@ -158,7 +160,7 @@ class GeneticAlgorithm:
             pairToMate.append(sample)
         return pairToMate
 
-    def createWeightedListOfChromosomes(self,listOfChromosomes):
+    def createWeightedSetOfChromosomes(self,listOfChromosomes):
         weightedListOfTuples = []
         for chromosome in listOfChromosomes:
             fitness = self.fitnessFunction(chromosome)
@@ -169,8 +171,8 @@ class GeneticAlgorithm:
                 else:
                     return (0,chromosome),True
 
-
-        return weightedListOfTuples, False
+        weightedSetOfTuples = set(weightedListOfTuples)
+        return weightedSetOfTuples, False
 
     def isPopulationStagnant(self,weightedChromosomes,acceptableStdDev):
         weights = []
