@@ -1,5 +1,6 @@
 import generalFunctions
 import random
+import math
 
 class Population:
             
@@ -30,11 +31,41 @@ class Population:
         self.population = newPopulation
 
     @staticmethod
-    def crossoverChromosomes(chromosomeA, chromosomeB, splitPoint,mutationRate,geneSize):
-        splitPoint = (splitPoint%(len(chromosomeA)/geneSize))*geneSize
-        chromosomeAB = chromosomeA[0:splitPoint]+chromosomeB[splitPoint:len(chromosomeB)]
-        chromosomeBA = chromosomeB[0:splitPoint]+chromosomeA[splitPoint:len(chromosomeA)]
-        return Population.mutateChromosome(chromosomeAB,mutationRate), Population.mutateChromosome(chromosomeBA,mutationRate) 
+    def crossoverChromosomes(chromosomeA, chromosomeB, mutationRate,geneSize):
+        #splitPoint = (splitPoint%(len(chromosomeA)/geneSize))*geneSize
+        sister,brother = Population.twoPointCrossover(chromosomeB,chromosomeA)
+        return Population.mutateChromosome(sister,mutationRate), Population.mutateChromosome(brother,mutationRate) 
+
+    @staticmethod
+    def invokeWrathOfGodCatastrophe(population):
+        sizeAfterCatastrophe = int((len(population) * 0.10))
+        print(sizeAfterCatastrophe)
+        return  random.sample(population,sizeAfterCatastrophe)
+
+    #taken from PyEvolve
+    @staticmethod
+    def twoPointCrossover(mom,dad):
+       """ The 1D Binary String crossover, Two Point
+
+       .. warning:: You can't use this crossover method for binary strings with length of 1.
+
+       """
+       sister = None
+       brother = None
+       gMom = mom
+       gDad = dad
+       
+
+       cuts = [random.randint(1, len(gMom)-1), random.randint(1, len(gMom)-1)]
+
+       if cuts[0] > cuts[1]:
+          generalFunctions.listSwapElement(cuts, 0, 1)
+
+       sister =  gMom[0:cuts[0]] + gDad[cuts[0]:cuts[1] ] + gMom[cuts[1]:]
+       brother = gDad[0:cuts[0]]  + gMom[cuts[0]:cuts[1]] + gDad[cuts[1]:]
+
+       return (sister, brother)
+
 
     @staticmethod
     def mutateChromosome(chromosome, mutationRate):
