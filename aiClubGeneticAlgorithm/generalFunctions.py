@@ -58,3 +58,26 @@ def splitStringEveryNCharacters(stringToSplit,n):
     ['go', 'ob', 'al', 'lo', 'oo', 'n']
     """
     return [stringToSplit[i:i+n] for i in range(0, len(stringToSplit), n)]
+
+
+  
+#taken from PyEvolve library
+def listSwapElement(lst, indexa, indexb):
+    """ Swaps elements A and B in a list.
+
+    Example:
+       >>> l = [1, 2, 3]
+       >>> Util.listSwapElement(l, 1, 2)
+       >>> l
+       [1, 3, 2]
+
+    :param lst: the list
+    :param indexa: the swap element A
+    :param indexb: the swap element B
+    :rtype: None
+
+    """
+    temp = lst[indexa]
+    lst[indexa] = lst[indexb]
+    lst[indexb] = temp
+
