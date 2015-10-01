@@ -4,6 +4,7 @@ import random
 import numpy
 import generalFunctions
 import statistics
+from enum import Enum
 
 #TODO
 # found a book that has some info on dominant genes, which I think is a great way to efficiently mutate and keep some optimization:
@@ -36,6 +37,7 @@ import statistics
 
 
 class GeneticAlgorithm:
+    SelectionTypes = Enum("SelectionTypes","tournament rouletteWheel")
 
     def __init__(self,fitnessFunction):
         self.fitnessFunction = fitnessFunction
@@ -49,6 +51,7 @@ class GeneticAlgorithm:
         self.acceptableStdDev = 1 
         self.turnsTopWeightHasntChanged = 0
         self.lastTopWeight = 0
+        self.selectionType = GeneticAlgorithm.SelectionTypes.tournament
 
 
     def setGeneSize(self,geneSize):
@@ -68,6 +71,9 @@ class GeneticAlgorithm:
 
     def setEliteRatio(self,eliteRatio):
         self.eliteRatio = eliteRatio
+
+    def setSelectionType(self,selectionType):
+        self.selectionType = selectionType
 
     def setChromsomeToHumanReadableFunction(self,chromosomeReadableFunction):
         self.chromosomeReadableFunction = chromosomeReadableFunction
@@ -94,21 +100,54 @@ class GeneticAlgorithm:
                 break
             #if we have a stagnant population, up the mutation rate
             populationIsStagnant= self.isPopulationStagnant(weightedChromosomes,self.acceptableStdDev)
-            if  populationIsStagnant or self.turnsTopWeightHasntChanged > 10:
+            if  populationIsStagnant:
                 print("population was stagnant or stuck in local optima increasing mutation rate to "),
-                self.adjustedMutationRate += 0.025
+                self.adjustedMutationRate += self.mutationRate
                 #capped at 50% because more is meaningless as we approach just flipping all the bits
-                if self.adjustedMutationRate > .50:
-                    self.adjustedMutationRate = .50
+                if self.adjustedMutationRate > .30:
+                    self.adjustedMutationRate = .30
                 print(self.adjustedMutationRate)
             else :
                 self.adjustedMutationRate = self.mutationRate
+
+            if self.turnsTopWeightHasntChanged > 15:
+                print("top dog has been top too long...KILL THEM OFF")
+                datBomb = """
+      . . .                         
+                         \|/                          
+                       `--+--'                        
+                         /|\                          
+                        ' | '                         
+                          |                           
+                          |                           
+                      ,--'#`--.                       
+                      |#######|                       
+                   _.-'#######`-._                    
+                ,-'###############`-.                 
+              ,'#####################`,               
+             /#########################\              
+            |###########################|             
+           |#############################|            
+           |#############################|            
+           |#############################|            
+           |#############################|            
+            |###########################|             
+             \#########################/              
+              `.#####################,'               
+                `._###############_,'                 
+                   `--..#####..--'      
+"""
+                print(datBomb)
+                weightedChromosomes  = Population.invokeWrathOfGodCatastrophe(weightedChromosomes)
+                self.turnsTopWeightHasntChanged = 0
+
 
             weighting,bestChromosome = GeneticAlgorithm.findHighestWeightedChromosome(weightedChromosomes)
             if weighting == self.lastTopWeight:
                 self.turnsTopWeightHasntChanged+=1
             else:
                 self.lastTopWeight = weighting
+                self.turnsTopWeightHasntChanged = 0
             readableVersion = self.chromosomeReadableFunction(bestChromosome)
             print("the best of all the chromosomes was this:")
             print("Weight:" + str(weighting) + " chromosome: "  +  bestChromosome + " readableVersion:" + readableVersion + " value: " + str(eval(readableVersion)))
@@ -125,18 +164,12 @@ class GeneticAlgorithm:
             for elite in elites:
                 for i in range (0,self.numberOfTimesToMutateElite):
                     mutatedElite = Population.mutateChromosome(elite[1],self.adjustedMutationRate)
-                    #print("mutatation rate of "),
-                    #print(self.adjustedMutationRate)
-                    #print("elite looks like this:"),
-                    #print(elite[1])
-                    #print("mutated elite was")
-                    #print(mutatedElite)
-                    nextGenerationChromosomes.append(elite[1])
+                    nextGenerationChromosomes.append(mutatedElite)
 
             while len(nextGenerationChromosomes) < self.populationSize:
                 #print('mayyyyyytinnnnng #' + str(len(nextGenerationChromosomes)))
-                pairToMate = GeneticAlgorithm.selectTwoToMate(weightedChromosomes)
-                firstChild,secondChild = Population.crossoverChromosomes(pairToMate[0],pairToMate[1],random.randint(0,10),self.adjustedMutationRate,self.geneSize)
+                pairToMate = GeneticAlgorithm.selectTwoToMate(self.selectionType,weightedChromosomes)
+                firstChild,secondChild = Population.crossoverChromosomes(pairToMate[0],pairToMate[1],self.adjustedMutationRate,self.geneSize)
                 nextGenerationChromosomes.append(firstChild)
                 nextGenerationChromosomes.append(secondChild)
             population.setPopulation(nextGenerationChromosomes)
@@ -154,11 +187,23 @@ class GeneticAlgorithm:
         return highestWeight, fittestChromosome    
 
     @staticmethod
-    def selectTwoToMate(weightedListOfChromosomes):
+    def selectTwoToMate(selectionType,weightedListOfChromosomes):
         pairToMate = []
-        for sample in generalFunctions.weightedSampleNoRepeat(weightedListOfChromosomes,2):
-            pairToMate.append(sample)
+        if selectionType == GeneticAlgorithm.SelectionTypes.tournament:
+            pairToMate.append(GeneticAlgorithm.tournamentSelection(weightedListOfChromosomes,3)[1])
+            pairToMate.append(GeneticAlgorithm.tournamentSelection(weightedListOfChromosomes,3)[1])
+        elif selectionType == GeneticAlgorithm.SelectionTypes.rouletteWheel:
+            for sample in generalFunctions.weightedSampleNoRepeat(weightedListOfChromosomes,2):
+                pairToMate.append(sample)
         return pairToMate
+
+
+    @staticmethod
+    def tournamentSelection(weightedSetOfChromosomes, numberOfParticipants):
+        chromosomesToDukeItOut = random.sample(weightedSetOfChromosomes,numberOfParticipants)
+        chromosomesToDukeItOut.sort(reverse=True)
+        return chromosomesToDukeItOut[0]
+
 
     def createWeightedSetOfChromosomes(self,listOfChromosomes):
         weightedListOfTuples = []
