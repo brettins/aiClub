@@ -136,7 +136,7 @@ chromosomeSize = 400
 populationSize = 1000
 epochs = 250
 
-simple_eval.POWER_MAX = 10000
+simple_eval.POWER_MAX = 5000
 
 geneticAlgorithm = GeneticAlgorithm(fitnessScore)
 geneticAlgorithm.setPopulationSize(populationSize)
